@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results</title>
+</head>
+<body>
+  <h1>Your Responses and Safety Tips</h1>
+  <div id="responses2"></div>
+  <h2>Severity Level</h2>
+  <div id="Severity2"></div>
+  <h2>Safety Tips</h2>
+  <div id="tips2"></div>
+
+  <script>
+    // Fetch stored results
+    const storedData = JSON.parse(localStorage.getItem("questionnaireResults2"));
+    console.log("Stored Data:", storedData);
+    const responsesDiv = document.getElementById("responses2");
+    const severityDiv = document.getElementById("Severity2");
+    const tipsDiv = document.getElementById("tips2");
+
+    // Tips based on severity levels
+    const tipsBySeverity = {
+      1: [
+    "Based on your answers we've assigned you Severity Level 1 (Low to Moderate Control/Abuse)",
+    "1 To avoid subtle manipulation, find courage and communicate your personal limits in a calm and assertive manner, and stick to them. ",
+    "2.  If you’re feeling unsure or uncomfortable, confide in a trusted person about your situation to gain outside perspective and emotional support.",
+    "3. Start noting down if you find patterns-incidents where you feel controlled or disrespected. This will help you identify if there is  a pattern of manipulation.",
+    "4. Learn more about the signs of unhealthy control and manipulation to better understand if what you are  experiencing is harmful."
+
+      ],
+      2: [
+    "Based on your answers we've assigned you Severity Level 2 (Moderate to Severe Control/Abuse)",
+    "Follow these tips",
+    "1. Start keeping a record of specific instances where you feel controlled, manipulated, or gaslit. This can help you see the severity of the situation and provide evidence if needed.",
+    "2. If you’re starting to feel that the relationship is becoming too controlling, begin thinking about safe ways to distance yourself, whether temporarily or permanently.",
+    "3. Consider seeing a counselor or therapist who specializes in relationship dynamics or emotional abuse to help you cope and strategize for your well-being.",
+    "4.  Build a circle of people who understand your situation and can offer emotional, logistical, or even legal support if necessary.",
+    "5. If your partner is controlling your finances, find ways to gain financial independence by setting up a separate bank account or exploring ways to earn your own money."
+
+      ],
+      3: [
+    "Based on your answers we've assigned you Severity Level 3  (High Risk of Emotional or Physical Abuse)",
+    "1.  If physical abuse is present or you fear it may escalate, create a safety plan. This includes identifying a safe place you can go, keeping important documents accessible, and having emergency contacts ready.",
+    "2. Immediately connect with domestic violence support services for guidance on how to protect yourself and leave the relationship safely.",
+    "3. If your partner has violent tendencies or frequent outbursts, avoid confrontations during these times and seek safety. Protect yourself first.",
+    "4. Physical abuse is never acceptable. If your partner has physically hurt you, prioritize finding a safe place and consider leaving the relationship.",
+    "5. If your partner is showing severe signs of control or abuse, it may be time to speak with a legal advisor about protective orders or other measures to safeguard your well-being."
+         ]
+
+    }
+    if (storedData) {
+      const { answers, maxSeverity } = storedData;
+
+      // Display answers
+      Object.entries(answers).forEach(([question, answer]) => {
+        const p = document.createElement("p");
+        p.textContent = `${question}: ${answer}`;
+        responsesDiv.appendChild(p);
+      });
+
+      // Display severity level
+      severityDiv.textContent = `Maximum Severity Level: ${maxSeverity.toString()}`;
+      // Display tips based on severity level
+      const tips = tipsBySeverity[maxSeverity];
+      if (tips) {
+        tips.forEach((tip) => {
+          const p = document.createElement("p");
+          p.textContent = `${tip}`;
+          tipsDiv.appendChild(p);
+        });
+      } else {
+        tipsDiv.textContent = "No tips available for the calculated severity level.";
+      }
+    } else {
+      responsesDiv.textContent = "No responses found.";
+    }
+  </script>
+</body>
+</html>

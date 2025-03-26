@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results</title>
+</head>
+<body>
+  <h1>Your Responses and Safety Tips</h1>
+  <div id="responses1"></div>
+  <h2>Severity Level</h2>
+  <div id="Severity1"></div>
+  <h2>Safety Tips</h2>
+  <div id="tips1"></div>
+
+  <script>
+    // Fetch stored results
+    const storedData = JSON.parse(localStorage.getItem("questionnaireResults"));
+    console.log("Stored Data:", storedData);
+    const responsesDiv = document.getElementById("responses1");
+    const severityDiv = document.getElementById("Severity1");
+    const tipsDiv = document.getElementById("tips1");
+
+    // Tips based on severity levels
+    const tipsBySeverity = {
+      1: [
+        "Encourage them to talk openly about their feelings and the situations since the stake and thus severity is seemingly low, which might educate any misunderstandings."
+      ],
+      2: [
+        "Shows signs of manipulation and public hostility. Encourage them to observe patterns in their relationship and negative impacts on wellbeing.",
+        "Recommend that they confide in trusted friends and family members."
+      ],
+      3: [
+        "Encorage them to document any physical injuries by taking photos or seeking medical attention which can serve as evidence.",
+        "If they are open to it,help them create a safety plan in case they need to leave quickly.",
+        "unpredicatble mood changes can be a sign of possible escalation in future,hencemust be considered as high severity challenge"
+         ]
+
+    }
+    if (storedData) {
+      const { answers, maxSeverity } = storedData;
+
+      // Display answers
+      Object.entries(answers).forEach(([question, answer]) => {
+        const p = document.createElement("p");
+        p.textContent = `${question}: ${answer}`;
+        responsesDiv.appendChild(p);
+      });
+
+      // Display severity level
+      severityDiv.textContent = `Maximum Severity Level: ${maxSeverity.toString()}`;
+      // Display tips based on severity level
+      const tips = tipsBySeverity[maxSeverity];
+      if (tips) {
+        tips.forEach((tip) => {
+          const p = document.createElement("p");
+          p.textContent = `${tip}`;
+          tipsDiv.appendChild(p);
+        });
+      } else {
+        tipsDiv.textContent = "No tips available for the calculated severity level.";
+      }
+    } else {
+      responsesDiv.textContent = "No responses found.";
+    }
+  </script>
+</body>
+</html>
