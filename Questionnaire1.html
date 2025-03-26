@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Safety Questionnaire</h1>
+        <p> If you feel that a person is a victim observe and respond these questions</p>
+        <form id="questionnaire1">
+            <div class="question">
+                <p>1. Are they accused or do they blame themselves for any issues in relationship?</p>
+                <input type="radio" name="q1" value="yes"> Yes
+                <input type="radio" name="q1" value="no"> No
+                <input type="radio" name="q1" value="not sure"> Not sure
+            </div>
+            <div class="question">
+                <p>2. Does the perpetrator have any sudden and unpredictable mood changes?</p>
+                <input type="radio" name="q2" value="yes"> Yes
+                <input type="radio" name="q2" value="no"> No
+                <input type="radio" name="q2" value="not sure"> Not sure
+            </div>
+            <div class="question">
+                <p>3.Do they often have to let someone know where they are very often?are they often being spied on?</p>
+                <input type="radio" name="q3" value="yes"> Yes
+                <input type="radio" name="q3" value="no"> No
+                <input type="radio" name="q3" value="not sure"> Not sure
+            
+            </div>
+            <div class="question">
+                <p>4.Do they seem to have lost interest in their hobbies or favourite activities?</p>
+                <input type="radio" name="q4" value="yes"> Yes
+                <input type="radio" name="q4" value="no"> No
+                <input type="radio" name="q4" value="not sure"> Not sure
+            </div>
+            <div class="question">
+                <p>5.Does someone cause embarrasing or awkward situations that make people uncomfortable?</p>
+                <input type="radio" name="q5" value="yes"> Yes
+                <input type="radio" name="q5" value="no"> No
+                <input type="radio" name="q5" value="not sure"> Not sure
+            </div>
+            <div class="question">
+                <p>6. Have they been accused of cheating or having an affair?</p>
+                <input type="radio" name="q6" value="yes"> Yes
+                <input type="radio" name="q6" value="no"> No
+                <input type="radio" name="q6" value="not sure"> Not sure
+            </div>
+            <div class="question">
+                <p>7.Have you been noticed any injuries on them?</p>
+                <input type="radio" name="q7" value="yes"> Yes
+                <input type="radio" name="q7" value="no"> No
+                <input type="radio" name="q7" value="not sure"> Not sure
+            </div>
+            <button type="submit" id="submitBtn">Submit</button>
+        </form>
+        <script>
+  document.getElementById("submitBtn").addEventListener("click", function (event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Fetch the form element
+    const form = document.getElementById("questionnaire1");
+    if (!form) {
+      console.error("Form element with ID 'questionnaire' not found!");
+      alert("An internal error occurred. Please reload the page.");
+      return;
+    }
+
+    // Create FormData object
+    const formData = new FormData(form);
+
+    // Initialize variables
+    const answers = {};
+    const questions = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
+    const severityLevels = [1, 3, 2, 1, 2, 2, 3];
+    let allAnswered = true;
+    let maxSeverity = 0;
+
+    // Process each question
+    questions.forEach((question, index) => {
+      if (formData.has(question)) {
+        const answer = formData.get(question);
+        answers[question] = answer;
+
+        // If the answer is "Yes", update severity
+        if (answer === "yes") {
+          maxSeverity = Math.max(maxSeverity, severityLevels[index]);
+        }
+      } else {
+        allAnswered = false; // Question not answered
+      }
+    });
+
+    // Check if all questions are answered
+    if (!allAnswered) {
+      alert("Please answer all questions before submitting.");
+      return;
+    }
+
+    // Store results and redirect
+    const resultData = { answers, maxSeverity };
+    localStorage.setItem("questionnaireResults1", JSON.stringify(resultData));
+    window.location.href = "result1.html"; // Redirect to results page
+  });
+</script>
+
+    </div>
+</body>
+</html>

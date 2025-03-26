@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domestic Violence Report Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, textarea, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .radio-group {
+            margin-bottom: 15px;
+            gap: 2px;
+        }
+        input[type="radio"] {
+            margin: 0;
+        }
+        button {
+            background-color: blue;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color:blue;
+        }
+        .success-message {
+            display: none;
+            color: green;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+   <script>
+    async function handleFormSubmission(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+        const data = {};
+
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        try {
+            const response = await fetch('http://localhost:5000/submit-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result.message);
+                document.getElementById('success-message').style.display = 'block';
+                form.reset();
+            } else {
+                console.error('Failed to submit report');
+                alert('An error occurred while submitting the report.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to connect to the server.');
+        }
+    }
+</script>
+
+
+</head>
+<body>
+    <div class="container">
+        <h1>Domestic Violence Report Form</h1>
+        <form onsubmit="handleFormSubmission(event)">
+            <h2>Section 1: Victim Information</h2>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label for="nationality">Nationality:</label>
+            <input type="text" id="nationality" name="nationality" required>
+
+            <label for="contact">Contact Information (Phone/Email):</label>
+            <input type="text" id="contact" name="contact" required>
+
+            <h2>Section 2: Incident Details</h2>
+            <label for="incident-date">Date of Incident:</label>
+            <input type="date" id="incident-date" name="incident-date" required>
+
+            <label for="incident-location">Location of Incident:</label>
+            <input type="text" id="incident-location" name="incident-location" required>
+
+            <label for="violence-type">Type of Violence Experienced:</label>
+            <select id="violence-type" name="violence-type" required>
+                <option value="physical">Physical</option>
+                <option value="emotional">Emotional/Psychological</option>
+                <option value="sexual">Sexual</option>
+                <option value="financial">Financial/Economic</option>
+                <option value="other">Other (please specify)</option>
+            </select>
+
+            <label for="incident-description">Description of the Incident:</label>
+            <textarea id="incident-description" name="incident-description" rows="5" required></textarea>
+
+            <label for="witnesses">Witnesses (if any):</label>
+            <textarea id="witnesses" name="witnesses" rows="3" placeholder="Name and contact information"></textarea>
+
+            <h2>Section 3: Perpetrator Information</h2>
+            <label for="perpetrator-name">Name:</label>
+            <input type="text" id="perpetrator-name" name="perpetrator-name">
+
+            <label for="relationship">Relationship to Victim:</label>
+            <select id="relationship" name="relationship">
+                <option value="partner">Partner/Spouse</option>
+                <option value="ex-partner">Ex-Partner/Ex-Spouse</option>
+                <option value="family">Family Member</option>
+                <option value="friend">Friend/Acquaintance</option>
+                <option value="stranger">Stranger</option>
+                <option value="other">Other (please specify)</option>
+            </select>
+
+            <label for="perpetrator-age">Age:</label>
+            <input type="number" id="perpetrator-age" name="perpetrator-age">
+
+            <label for="perpetrator-gender">Gender:</label>
+            <select id="perpetrator-gender" name="perpetrator-gender">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="other">Other</option>
+            </select>
+
+            <h2>Section 4: History of Violence</h2>
+            <div class="radio-group">
+                <p>Has the perpetrator been violent before?</p>
+                <input type="radio" id="violent-before-yes" name="violent-before" value="yes" required>Yes
+                <input type="radio" id="violent-before-No" name="violent-before" value="No" required>No
+            </div>
+            <label for="previous-incidents">If yes, please provide details of previous incidents:</label>
+            <textarea id="previous-incidents" name="previous-incidents" rows="3"></textarea>
+
+            <div class="radio-group">
+                <p>Has the victim reported these incidents to the authorities before?</p>
+                <input type="radio" id="reported-yes" name="reported" value="yes" required>Yes
+                <input type="radio" id="reported-no" name="reported" value="no">No
+            </div>
+            <label for="action-taken">If yes, what action was taken?</label>
+            <textarea id="action-taken" name="action-taken" rows="3"></textarea>
+            <h2>Section 5: Risk Assessment</h2>
+            <div class="radio-group">
+                <p>Does the perpetrator have access to weapons?</p>
+                <input type="radio" id="weapons-yes" name="weapons" value="yes" required>Yes
+                <input type="radio" id="weapons-no" name="weapons" value="no">No
+                <input type="radio" id="weapons-not-sure" name="weapons" value="not-sure">Not sure
+            </div>
+            <div class="radio-group">
+                <p> Has the perpetrator made threats to harm the victim or others?</p>
+                <input type="radio" id="threats-yes" name="threats" value="yes" required>Yes
+                <input type="radio" id="threats-No" name="threats" value="no">No
+            </div>
+            <div class="radio-group">
+                <p>Is the victim afraid of the perpetrator?</p>
+                <input type="radio" id="afraid-yes" name="afraid" value="yes" required>Yes
+                <input type="radio" id="afraid-no" name="afraid" value="no">No
+            </div>
+
+            <div class="radio-group">
+                <p> Does the victim have children or dependents?</p>
+                <input type="radio" id="children-yes" name="children" value="yes" required>Yes
+                <input type="radio" id="children-no" name="children" value="no">No
+            </div>
+
+            <div class="radio-group">
+                <p>Is the victim currently in a safe place?</p>
+                <input type="radio" id="safe-place-yes" name="safe-place" value="yes" required>Yes
+                <input type="radio" id="safe-place-no" name="safe-place" value="no">No
+            </div>
+
+            <h2>Section 6: Support and Resources</h2>
+            <div class="radio-group">
+                <p>Does the victim need immediate medical attention?</p>
+                <input type="radio" id="medical-yes" name="medical" value="yes" required>Yes
+                <input type="radio" id="medical-no" name="medical" value="no">No
+            </div>
+
+            <div class="radio-group">
+                <p>Does the victim need assistance with safe housing?</p>
+                <input type="radio" id="housing-yes" name="housing" value="yes" required>Yes
+                <input type="radio" id="housing-no" name="housing" value="no">No
+            </div>
+
+            <div class="radio-group">
+                <p> Does the victim require legal assistance?</p>
+                <input type="radio" id="legal-yes" name="legal" value="yes" required>Yes
+                <input type="radio" id="legal-no" name="legal" value="no">No
+            </div>
+
+            <div class="radio-group">
+                <p>Would the victim like to speak with a counselor?</p>
+                <input type="radio" id="counselor-yes" name="counselor" value="yes" required>Yes
+                <input type="radio" id="counselor-no" name="counselor" value="no">No
+            </div>
+
+            <label for="other-support">Other support or resources needed:</label>
+            <textarea id="other-support" name="other-support" rows="3"></textarea>
+
+            <h2>Section 7: Additional Information</h2>
+            <label for="additional-info">Any other information the victim would like to provide:</label>
+            <textarea id="additional-info" name="additional-info" rows="5"></textarea>
+
+            <button type="submit">Submit Report</button>
+        </form>
+        <div id="success-message" class="success-message">
+            Report submitted successfully! Thank you for providing the information.
+        </div>
+    </div>
+</body>
+</html>

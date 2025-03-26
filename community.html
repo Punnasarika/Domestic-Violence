@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Support Forum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .post {
+            background-color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .post-title {
+            size: 10px;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .post-content {
+        max-height: 200px; /* Adjust as needed */
+        overflow-y: auto; /* Adds a scrollbar for vertical overflow */
+        padding: 5px;
+        word-wrap: break-word; /* Ensures long words break correctly */
+        }
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+        }
+        .post-footer button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .reply {
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Community Support Forum</h1>
+    </header>
+    <div class="container">
+        <div id="posts-list">
+            <!-- Posts will appear here -->
+        </div>
+        <div>
+            <h2>Create a new Post</h2>
+            <input type="text" id="title" placeholder="Post Title" />
+            <textarea id="content" placeholder="Post Content"></textarea>
+            <button id="create-post-btn">Create Post</button>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = 'http://localhost:5000/posts';
+
+        // Fetch and display posts
+        async function fetchPosts() {
+            const res = await fetch(apiUrl);
+            const posts = await res.json();
+            const postsList = document.getElementById('posts-list');
+            postsList.innerHTML = ''; // Clear existing posts
+
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <div class="post-title">${post.title}</div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-footer">
+                        <div>Votes: ${post.votes}</div>
+                        <button onclick="votePost('${post._id}', 'up')">Upvote</button>
+                        <button onclick="votePost('${post._id}', 'down')">Downvote</button>
+                    </div>
+                    <div class="replies">
+                        ${post.replies.map(reply => `
+                            <div class="reply">
+                                <strong>${reply.user}:</strong>
+                                <p>${reply.content}</p>
+                            </div>
+                        `).join('')}
+                        <textarea id="reply-content-${post._id}" placeholder="Your Reply"></textarea>
+                        <button onclick="addReply('${post._id}')">Submit Reply</button>
+                    </div>
+                `;
+                postsList.appendChild(postElement);
+            });
+        }
+
+        // Create a new post
+        document.getElementById('create-post-btn').addEventListener('click', async () => {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, content })
+            });
+
+            if (res.ok) {
+                fetchPosts(); // Refresh posts list
+                document.getElementById('title').value = '';
+                document.getElementById('content').value = '';
+            }
+        });
+
+        // Add a reply to a post
+        async function addReply(postId) {
+            const content = document.getElementById(`reply-content-${postId}`).value;
+
+            const res = await fetch(`${apiUrl}/${postId}/reply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({content })
+            });
+
+            if (res.ok) {
+                fetchPosts(); // Refresh posts list
+            }
+        }
+
+        // Vote for a post
+        async function votePost(postId, vote) {
+            const res = await fetch(`${apiUrl}/${postId}/vote`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ vote })
+            });
+
+            if (res.ok) {
+                fetchPosts(); // Refresh posts list
+            }
+        }
+
+        // Initial call to load posts
+        fetchPosts();
+    </script>
+</body>
+</html>
